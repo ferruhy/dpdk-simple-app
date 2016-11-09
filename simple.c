@@ -16,8 +16,21 @@
 #define RX_RING_SIZE 128
 #define TX_RING_SIZE 512
 
+static uint8_t forwarding_lcore = 1;
+
 int lcore_main(void *arg)
 {
+	unsigned int lcore_id = rte_lcore_id();
+
+	if (lcore_id != forwarding_lcore) {
+		RTE_LOG(INFO, APP, "lcore %u exiting\n", lcore_id);
+		return 0;
+	}
+
+	/* Run until the application is quit or killed. */
+	for (;;) {
+	}
+
 	return 0;
 }
 

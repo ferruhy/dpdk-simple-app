@@ -5,14 +5,19 @@
 #include <rte_common.h>
 #include <rte_ethdev.h>
 #include <rte_log.h>
+#include <rte_mbuf.h>
 
 /* Macros for printing using RTE_LOG */
 #define RTE_LOGTYPE_APP RTE_LOGTYPE_USER1
+
+#define NUM_MBUFS 8191
+#define MBUF_CACHE_SIZE 250
 
 int main(int argc, char *argv[])
 {
 	int ret;
 	uint8_t nb_ports;
+	struct rte_mempool *mbuf_pool;
 
 	/*
 	 * EAL: Environment Abstract Layer"
@@ -49,6 +54,15 @@ int main(int argc, char *argv[])
 		rte_exit(EXIT_FAILURE, "Invalid port number\n");
 
 	RTE_LOG(INFO, APP, "Number of ports:%u\n", nb_ports);
+
+	/* Creates a new mbuf mempool */
+	mbuf_pool = rte_pktmbuf_pool_create("MBUF_POOL",
+		NUM_MBUFS * nb_ports,
+		MBUF_CACHE_SIZE, 0, RTE_MBUF_DEFAULT_BUF_SIZE,
+		rte_socket_id());
+
+	if (mbuf_pool == NULL)
+		rte_exit(EXIT_FAILURE, "mbuf_pool create failed\n");
 
 	/* There is no un-init for eal */
 

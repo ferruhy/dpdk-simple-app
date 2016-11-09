@@ -4,4 +4,6 @@ APP := simple
 
 SRCS-y := simple.c
 
+CFLAGS += -O3
+
 include $(RTE_SDK)/mk/rte.extapp.mk

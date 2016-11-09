@@ -13,6 +13,9 @@
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
 
+#define RX_RING_SIZE 128
+#define TX_RING_SIZE 512
+
 static inline int
 port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 {
@@ -22,6 +25,7 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 	const uint16_t nb_rx_queues = 1;
 	const uint16_t nb_tx_queues = 1;
 	int ret;
+	uint16_t q;
 
 	/* Configure the Ethernet device. */
 	ret = rte_eth_dev_configure(port,
@@ -30,6 +34,24 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 			&port_conf);
 	if (ret != 0)
 		return ret;
+
+	/* Allocate and set up 1 RX queue per Ethernet port. */
+	for (q = 0; q < nb_rx_queues; q++) {
+		ret= rte_eth_rx_queue_setup(port, q, RX_RING_SIZE,
+				rte_eth_dev_socket_id(port),
+				NULL, mbuf_pool);
+		if (ret < 0)
+			return ret;
+	}
+
+	/* Allocate and set up 1 TX queue per Ethernet port. */
+	for (q = 0; q < nb_tx_queues; q++) {
+		ret= rte_eth_tx_queue_setup(port, q, TX_RING_SIZE,
+				rte_eth_dev_socket_id(port),
+				NULL);
+		if (ret < 0)
+			return ret;
+	}
 
 	return 0;
 }

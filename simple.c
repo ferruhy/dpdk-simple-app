@@ -13,11 +13,18 @@
 #define NUM_MBUFS 8191
 #define MBUF_CACHE_SIZE 250
 
+static inline int
+port_init(uint8_t port, struct rte_mempool *mbuf_pool)
+{
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	int ret;
 	uint8_t nb_ports;
 	struct rte_mempool *mbuf_pool;
+	uint8_t portid;
 
 	/*
 	 * EAL: Environment Abstract Layer"
@@ -63,6 +70,11 @@ int main(int argc, char *argv[])
 
 	if (mbuf_pool == NULL)
 		rte_exit(EXIT_FAILURE, "mbuf_pool create failed\n");
+
+	/* Initialize all ports. */
+	for (portid = 0; portid < nb_ports; portid++)
+		if (port_init(portid, mbuf_pool) != 0)
+			rte_exit(EXIT_FAILURE, "port init failed\n");
 
 	/* There is no un-init for eal */
 

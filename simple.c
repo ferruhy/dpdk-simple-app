@@ -58,6 +58,9 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 	if (ret < 0)
 		return ret;
 
+	/* Enable RX in promiscuous mode for the Ethernet device. */
+	rte_eth_promiscuous_enable(port);
+
 	return 0;
 }
 

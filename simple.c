@@ -24,7 +24,18 @@ static uint8_t mac_swap = 1;
 static void
 simple_mac_swap(struct rte_mbuf **bufs, uint16_t nb_mbufs)
 {
+	struct ether_hdr *eth;
+	struct ether_addr tmp;
+	struct rte_mbuf *m;
+	uint16_t buf;
 
+	for (buf = 0; buf < nb_mbufs; buf++) {
+		m = bufs[buf];
+		eth = rte_pktmbuf_mtod(m, struct ether_hdr *);
+		ether_addr_copy(&eth->s_addr, &tmp);
+		ether_addr_copy(&eth->d_addr, &eth->s_addr);
+		ether_addr_copy(&tmp, &eth->d_addr);
+	}
 }
 
 int lcore_main(void *arg)

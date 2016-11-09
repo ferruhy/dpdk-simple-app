@@ -3,10 +3,12 @@
 
 #include <rte_eal.h>
 #include <rte_common.h>
+#include <rte_ethdev.h>
 
 int main(int argc, char *argv[])
 {
 	int ret;
+	uint8_t nb_ports;
 
 	/*
 	 * EAL: Environment Abstract Layer"
@@ -33,6 +35,14 @@ int main(int argc, char *argv[])
 
 	argc -= ret;
 	argv += ret;
+
+	/*
+	 * Check that there is an even number of ports to
+	 * send/receive on.
+	 */
+	nb_ports = rte_eth_dev_count();
+	if (nb_ports < 2 || (nb_ports & 1))
+		rte_exit(EXIT_FAILURE, "Invalid port number\n");
 
 	/* There is no un-init for eal */
 

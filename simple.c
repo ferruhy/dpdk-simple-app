@@ -16,6 +16,11 @@
 #define RX_RING_SIZE 128
 #define TX_RING_SIZE 512
 
+int lcore_main(void *arg)
+{
+	return 0;
+}
+
 static inline int
 port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 {
@@ -120,6 +125,10 @@ int main(int argc, char *argv[])
 	for (portid = 0; portid < nb_ports; portid++)
 		if (port_init(portid, mbuf_pool) != 0)
 			rte_exit(EXIT_FAILURE, "port init failed\n");
+
+	rte_eal_mp_remote_launch(lcore_main, NULL, SKIP_MASTER);
+
+	rte_eal_mp_wait_lcore();
 
 	/* There is no un-init for eal */
 

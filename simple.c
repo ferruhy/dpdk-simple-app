@@ -4,6 +4,10 @@
 #include <rte_eal.h>
 #include <rte_common.h>
 #include <rte_ethdev.h>
+#include <rte_log.h>
+
+/* Macros for printing using RTE_LOG */
+#define RTE_LOGTYPE_APP RTE_LOGTYPE_USER1
 
 int main(int argc, char *argv[])
 {
@@ -43,6 +47,8 @@ int main(int argc, char *argv[])
 	nb_ports = rte_eth_dev_count();
 	if (nb_ports < 2 || (nb_ports & 1))
 		rte_exit(EXIT_FAILURE, "Invalid port number\n");
+
+	RTE_LOG(INFO, APP, "Number of ports:%u\n", nb_ports);
 
 	/* There is no un-init for eal */
 

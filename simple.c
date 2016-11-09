@@ -16,6 +16,21 @@
 static inline int
 port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 {
+	struct rte_eth_conf port_conf = {
+		.rxmode = { .max_rx_pkt_len = ETHER_MAX_LEN }
+	};
+	const uint16_t nb_rx_queues = 1;
+	const uint16_t nb_tx_queues = 1;
+	int ret;
+
+	/* Configure the Ethernet device. */
+	ret = rte_eth_dev_configure(port,
+			nb_rx_queues,
+			nb_tx_queues,
+			&port_conf);
+	if (ret != 0)
+		return ret;
+
 	return 0;
 }
 

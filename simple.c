@@ -53,6 +53,11 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 			return ret;
 	}
 
+	/* Start the Ethernet port. */
+	ret = rte_eth_dev_start(port);
+	if (ret < 0)
+		return ret;
+
 	return 0;
 }
 

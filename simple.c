@@ -165,13 +165,28 @@ port_init(uint8_t port, struct rte_mempool *mbuf_pool)
 }
 
 static void
-signal_handler(int signum)
+print_stats(void)
+{
+	struct rte_eth_stats stats;
+	uint8_t nb_ports = rte_eth_dev_count();
+	uint8_t port;
 
+	for (port = 0; port < nb_ports; port++) {
+		printf("\nStatistics for port %u\n", port);
+		rte_eth_stats_get(port, &stats);
+		printf("Rx:%9llu Tx:%9llu dropped:%9llu\n",
+			stats.ipackets, stats.opackets, stats.imissed);
+	}
+}
+
+static void
+signal_handler(int signum)
 {
 	if (signum == SIGINT || signum == SIGTERM) {
 		printf("\n\nSignal %d received, preparing to exit...\n",
 				signum);
 		force_quit = true;
+		print_stats();
 	}
 }
 

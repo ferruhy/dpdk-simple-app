@@ -174,7 +174,7 @@ print_stats(void)
 	for (port = 0; port < nb_ports; port++) {
 		printf("\nStatistics for port %u\n", port);
 		rte_eth_stats_get(port, &stats);
-		printf("Rx:%9llu Tx:%9llu dropped:%9llu\n",
+		printf("Rx:%9"PRIu64" Tx:%9"PRIu64" dropped:%9"PRIu64"\n",
 			stats.ipackets, stats.opackets, stats.imissed);
 	}
 }
